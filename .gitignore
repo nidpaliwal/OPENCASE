@@ -1,1 +1,9 @@
 QA_REPORT.md
+node_modules/
+.env
+.env.local
+dist/
+.vercel/
+*.log
+.DS_Store
+Thumbs.db

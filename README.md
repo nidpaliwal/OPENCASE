@@ -2,72 +2,77 @@
 
 **Real problems, real solvers, verified outcomes.**
 
-OpenCase is a single-page prototype for a problem-solving marketplace. People post real-world problems for free, solvers pick them up and submit solutions, filers accept the fix that works, and an admin console handles moderation and shows monetization signals — all in one static `index.html` file.
+OpenCase is a problem-solving marketplace where people post real-world problems, solvers compete to provide the best solution, and an AI-powered matching engine connects the right solvers to the right problems. Verified solutions are recorded on the Polygon blockchain for immutable proof of solver reputation.
 
-> This is a **prototype**. There are no real accounts, no real payments, and no real server-side authentication. See [Known limitations](#known-limitations) below before using it for anything beyond a demo.
+## Live Demo
 
-## Portals
+Deploy to Vercel in one click:
+1. Push this repo to GitHub
+2. Go to [vercel.com/new](https://vercel.com/new) → Import Git Repository
+3. Deploy — no configuration needed
 
-The app is organized into three portals, reachable from the home screen:
+## Features
 
-### 🧾 Public Portal — file & track problems
-- File a problem for free (title, description, category, optional bounty, optional $5 "priority placement" boost)
-- Check for an existing fix before filing (simple keyword match against solved cases)
-- Track cases filed under your name in **My Cases**, and accept a submitted solution once it works
-- Search the **Solved Library** — an archive of previously solved cases anyone can search
+- **3 Portals:** Public (file problems), Solver (solve & build reputation), Admin (operations dashboard)
+- **Real Backend:** Supabase for auth, database, and real-time subscriptions
+- **AI-Powered:** Semantic problem matching, smart categorization, solution drafting
+- **Blockchain Verified:** Accepted solutions are hashed and verified on Polygon Amoy testnet
+- **Revenue Model:** Priority placements ($5), bounty escrow (10% take-rate), premium subscriptions ($9/mo)
 
-### 🛠️ Solver Portal — work cases, build proof
-- Browse the open board and submit solutions to any case
-- Optionally draft a solution with AI assistance (calls the Anthropic API; falls back to a structured template if the call fails), limited to 3 free drafts/day unless "Premium" (simulated) is active
-- **My Portfolio** — verified wins (accepted solutions) and cases currently in play
-- **Reputation** — a leaderboard ranking solvers by number of accepted solutions
+## Tech Stack
 
-### 🔐 Admin Console — operations dashboard
-- Gated by a client-side passcode (SHA-256 hashed) — clearly labeled as demo-only security
-- **Dashboard** — live tiles (open/solved/flagged/submissions/solvers/revenue) and a recent activity feed; includes a one-click sample data seeder for a cold-start board
-- **Moderation** — review flagged problems/solutions, remove or restore items
-- **All Cases** — filterable list of every case (all / open / solved / flagged / removed) with per-case moderation actions
-- **Insights & Data** — demand by category, top solver profiles, simulated monetization figures, and a full CSV dataset export
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Vanilla HTML/CSS/JS (no framework) |
+| Backend | Supabase (PostgreSQL, Auth, Realtime, Edge Functions) |
+| AI | Gemini / Anthropic API with free-tier fallback |
+| Blockchain | Polygon Amoy testnet via ethers.js |
+| Deploy | Vercel (static) |
 
-## Tech stack
+## Quick Start
 
-- Plain HTML/CSS/JS — no build step, no framework, no dependencies beyond Google Fonts
-- Persistence via a `window.storage` key/value API (shared, cross-user data for the board; private, per-user data for local preferences), with a `localStorage` fallback if `window.storage` isn't available
-- AI drafting calls `https://api.anthropic.com/v1/messages` (`claude-sonnet-4-6`) directly from the browser
+1. Open `index.html` in a browser — works with localStorage fallback (no backend needed)
+2. For full features, run the SQL schema in Supabase SQL Editor
+3. Update `js/config.js` with your Supabase credentials
 
-## Running it
+## Database Schema
 
-Just open `index.html` in a browser. No server, build tools, or install step required.
+Run `sql/schema.sql` in your Supabase SQL Editor to create:
+- `profiles` — User accounts (extends Supabase Auth)
+- `problems` — Filed problems with categories, bounties, status
+- `solutions` — Solver submissions with AI-assistance flags
+- `solver_rankings` — Reputation leaderboard
+- `ai_usage` — Daily AI draft quotas
+- `activity_log` — Full audit trail
+- `blockchain_verifications` — On-chain proof records
 
-```bash
-open index.html   # macOS
-# or double-click the file / drag it into a browser tab
+## Project Structure
+
+```
+index.html          — Main entry point
+js/
+  config.js         — Environment configuration
+  supabase-client.js — Supabase SDK wrapper
+  auth.js           — Authentication (signup/login/logout)
+  db.js             — Database CRUD operations
+  ai.js             — AI matching, categorization, drafting
+  blockchain.js     — Solution verification on Polygon
+  app.js            — Main application logic
+sql/
+  schema.sql        — Database schema + RLS policies + seed data
+vercel.json         — Deployment configuration
 ```
 
-On first load with an empty board, use the Admin Console → Dashboard → **Seed sample cases** button to populate a few example cases, solutions, and a ranked solver.
+## Admin Access
 
-## Data model
+Passcode: `password` (SHA-256 hashed, client-side only — DEMO MODE)
 
-All data lives under a few storage keys:
+## API Keys
 
-| Key | Scope | Contents |
-|---|---|---|
-| `opencase_problems` | shared | Array of problem/case objects |
-| `opencase_solutions_<problemId>` | shared | Array of solution objects for that problem |
-| `opencase_solvers` | shared | Map of solver name → accepted-solution count |
-| `opencase_prefs` | private (per user) | Local preferences: saved names, AI usage counters, premium flag |
+Set these in `js/config.js`:
+- `SUPABASE_URL` + `SUPABASE_ANON_KEY` — from your Supabase project settings
+- AI provider keys (optional) — Gemini free tier or Anthropic
 
-## Known limitations
+## License
 
-This is a prototype, not a production app — a few things to be aware of before extending it:
-
-- **No real auth.** Both filer and solver identity are self-declared free-text names (honor system). The admin gate is a hashed passcode checked entirely client-side and is explicitly bypassable by anyone technical.
-- **No real payments.** Bounties, the $5 priority-placement fee, and Premium ($9/mo) are all simulated — no payment processor is wired up.
-- **Last-write-wins storage, no transactions.** Writes are read-modify-write against a shared key. Two people acting on the same case at nearly the same moment (e.g. submitting solutions simultaneously) can race and one update can be lost.
-- **AI drafting calls the Anthropic API directly from the browser** with no key management shown here — wire this through your own backend before shipping.
-
-## Suggested next steps
-
-- Move admin auth and payment/bounty handling to a real backend
-- Add optimistic concurrency (versioning or merge-on-write) for shared records
-- Real accounts instead of self-declared names
+MIT
