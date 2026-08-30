@@ -1,0 +1,15 @@
+{
+  "name": "opencase-contracts",
+  "version": "1.0.0",
+  "description": "OpenCase smart contract deployment",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run deploy.js --network amoy",
+    "verify": "npx hardhat verify --network amoy"
+  },
+  "devDependencies": {
+    "hardhat": "^2.22.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "ethers": "^6.13.0"
+  }
+}

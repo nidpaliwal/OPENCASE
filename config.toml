@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "verify-solution": {
+      "verify-jwt": true
+    }
+  }
+}

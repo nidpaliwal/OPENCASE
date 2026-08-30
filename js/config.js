@@ -4,6 +4,7 @@ const CONFIG = {
   AI_PROVIDER: 'auto',
   BLOCKCHAIN_NETWORK: 'polygon-amoy',
   BLOCKCHAIN_RPC: 'https://rpc-amoy.polygon.technology',
+  BLOCKCHAIN_CONTRACT_ADDRESS: '', // Set after deploying contracts/OpenCaseVerifier.sol
   FEATURED_FEE: 5,
   TAKE_RATE: 0.10,
   FREE_DRAFT_LIMIT: 3,

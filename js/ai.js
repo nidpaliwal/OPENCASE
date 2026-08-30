@@ -3,7 +3,7 @@
 // Uses free tiers: Gemini (Google) or browser-native fallback
 
 const AI = (() => {
-  const GEMINI_KEY = ''; // User provides in settings
+  let GEMINI_KEY = ''; // User provides in settings
   const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
   let provider = CONFIG.AI_PROVIDER || 'auto';

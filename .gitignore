@@ -7,3 +7,7 @@ dist/
 *.log
 .DS_Store
 Thumbs.db
+contracts/artifacts/
+contracts/cache/
+contracts/deployment.json
+contracts/typechain-types/
